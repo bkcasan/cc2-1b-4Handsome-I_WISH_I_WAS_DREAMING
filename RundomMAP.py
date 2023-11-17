@@ -1,24 +1,26 @@
+
 from pynput import keyboard
 from random import randint
 import random
 import os
-import sys
+import sys 
 
-print("Monster = ■")
-print("rock=# ")
+print("Monster = ~")
+print("rock= # ")
 print("player = ♂")
 print("treasure = $")
 print("heals =  ♥ ")
 
-height = 30  
-width = 40
+
+height = 10
+width = 15
 player = chr(11)
 treasure = '$'
-monster = '■ '
-rock = "#"   
+monster = '~'
+rock = "#"
 
-no_of_monsters = 30
-no_of_rocks = 250
+no_of_monsters = 5
+no_of_rocks = 5
 no_of_health = 3
 score = 0
 health_level = 100
