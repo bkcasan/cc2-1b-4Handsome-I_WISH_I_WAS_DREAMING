@@ -87,8 +87,8 @@ class CaveMap:
 
     def get_empty_position(self):
         while True:
-            x = random.randint(1, self.width - 1)
-            y = random.randint(1, self.height - 1)
+            x = random.randint(0, self.width - 1)
+            y = random.randint(0, self.height - 1)
             if self.map_data[y][x] == '.':
                 return x, y
 
@@ -359,6 +359,7 @@ def view_inventory(player):
     for item in player.inventory:
         print(item)
     print("-----------------\n")
+
 def main():
     player_name = input("Enter your name: ")
     print_typewriter(f"\nGreetings, {player_name}!\n")
@@ -370,14 +371,16 @@ def main():
     player = Player(player_name, 0, 0)
     cave_map = CaveMap(10, 10)
     cave_map.set_entrance()
-    cave_map.generate_cave_walls(40)
+    cave_map.generate_cave_walls(50)
     cave_map.scatter_loot(5)  # Scatter 5 attack-boosting loots
-    cave_map.scatter_enemies(8)  # Scatter 3 enemies
+    cave_map.scatter_enemies(10)  # Scatter 3 enemies
 
     objectives = {
         "Defeat All Enemies": False,
-        "Find the Artifact": False
+        "Find the Artifact": False,
+        "Enter the Cave": False  # Add the new objective
     }
+
 
     while True:
         cave_map.draw(player)
