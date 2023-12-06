@@ -10,4 +10,4 @@
 
 5.Run
 
-FINAL FILE IS IN THE pokemon gotta file :)
+FINAL FILE IS IN THE pokemon gotta folder :)
