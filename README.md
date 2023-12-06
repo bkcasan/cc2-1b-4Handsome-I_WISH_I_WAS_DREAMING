@@ -9,3 +9,5 @@
 4.Return to VS studio or editor
 
 5.Run
+
+FINAL FILE IS IN THE pokemon gotta file :)
