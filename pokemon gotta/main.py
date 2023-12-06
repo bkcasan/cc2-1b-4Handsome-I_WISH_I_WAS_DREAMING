@@ -46,7 +46,7 @@ class Item:
     def __init__(self, name, description, effect, power):
         self.name = name
         self.description = description
-        self.effect = effect  # Effect can be "attack" or "speed"
+        self.effect = effect
         self.power = power
 
     def __str__(self):
@@ -105,7 +105,7 @@ class CaveMap:
         self.map_data[y][x] = 'A'
 
     def draw(self, player):
-        os.system("clear" if os.name == "posix" else "cls")  # Clear console screen
+        os.system("clear" if os.name == "posix" else "cls")
 
         for row in range(self.height):
             for col in range(self.width):
@@ -142,35 +142,30 @@ def combat(player, enemy):
     print("-----------------------")
 
     while player.health > 0 and enemy.health > 0:
-        # Player's turn
         print("\nPlayer's turn:")
         print("1. Attack")
         print("2. Run")
         action = input("Choose your action: ")
 
         if action == "1":
-            # Implement attack logic here
             player_attack_damage = random.randint(1, player.attack)
             enemy.health -= player_attack_damage
             print(f"You dealt {player_attack_damage} damage to {enemy.name}!")
         elif action == "2":
-            # Implement run logic here
-            run_success = random.random() < 0.5  # 50% chance of success
+            run_success = random.random() < 0.5
             if run_success:
                 print("You successfully escaped from the battle!")
                 return
             else:
                 print("Failed to escape! The enemy attacks.")
-                # Continue with enemy's turn
 
-        # Check if the enemy is defeated
+
         if enemy.health <= 0:
             print(f"\nYou defeated {enemy.name}!")
-            # Add loot drop logic here
             loot_drop = generate_loot()
             print(f"You obtained: {loot_drop}")
             apply_loot(player, loot_drop)
-            player.health = min(100, player.health + 0.2 * player.health)  # Regain 20% health
+            player.health = min(100, player.health + 0.2 * player.health)
             print(f"You regained 20% health. Current health: {player.health}")
             return
 
@@ -198,6 +193,13 @@ def apply_loot(player, loot):
         print(f"You gained a Speed Boost! Your speed is now {player.speed}.")
 
 
+def clear_screen():
+    os.system("clear" if os.name == "posix" else "cls")
+
+def display_encounter_message():
+    clear_screen()
+    print_typewriter("YOU HAVE ENCOUNTERED AN ENEMY !\n")
+
 def move_player(player, direction, cave_map):
     new_x, new_y = player.x, player.y
 
@@ -210,9 +212,7 @@ def move_player(player, direction, cave_map):
     elif direction == "D" and player.x < cave_map.width - 1:
         new_x += 1
 
-    # Check if the new coordinates are within the valid range
     if 0 <= new_x < cave_map.width and 0 <= new_y < cave_map.height:
-        # Check for loot pickup
         if (new_x, new_y) in cave_map.items:
             loot_index = cave_map.items.index((new_x, new_y))
             _, _, loot = cave_map.items[loot_index]
@@ -221,24 +221,23 @@ def move_player(player, direction, cave_map):
             if loot.effect == "attack":
                 player.attack += 5
 
-        # Check for enemy encounter
         if (new_x, new_y) in cave_map.enemies:
             enemy_index = cave_map.enemies.index((new_x, new_y))
             enemy_position = cave_map.enemies.pop(enemy_index)
-            enemy = Enemy("Monster", 20, 10, 5)  # Customize enemy attributes
+            enemy = Enemy("Monster", 20, 10, 5) 
+            display_encounter_message()
             combat(player, enemy)
-            return  # Exit the function after combat
-
-        # Move player in the cave
+            return 
+        
         if cave_map.map_data[new_y][new_x] != '#':
             player.x, player.y = new_x, new_y
+
 def print_typewriter(text, delay=0.03):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
         time.sleep(delay)
 
-# Remove the collision check in the handle_landmark function
 def handle_landmark(player, objectives, cave_map):
     if cave_map.map_data[player.y][player.x] == "D":
         if not objectives["Defeat All Enemies"]:
@@ -250,7 +249,6 @@ def handle_landmark(player, objectives, cave_map):
         print("Legend has it that the cave conceals the ancient artifact you seek.")
         input("Press Enter to enter the cave...\n")
 
-        # Set the location of the artifact in the dark cave
         artifact_x, artifact_y = 8, 8
         cave_map.set_artifact(artifact_x, artifact_y)
 
@@ -270,7 +268,6 @@ def handle_landmark(player, objectives, cave_map):
 
             move_player(player, action, cave_map)
 
-            # Check if the player reached the artifact
             if player.x == artifact_x and player.y == artifact_y:
                 print("You found the ancient artifact!")
                 objectives["Find the Artifact"] = True
@@ -288,7 +285,6 @@ def handle_landmark(player, objectives, cave_map):
         print("Legend has it that the cave conceals the ancient artifact you seek.")
         input("Press Enter to enter the cave...\n")
 
-        # Set the location of the artifact in the dark cave
         artifact_x, artifact_y = 8, 8
         cave_map.set_artifact(artifact_x, artifact_y)
 
@@ -308,7 +304,6 @@ def handle_landmark(player, objectives, cave_map):
 
             move_player(player, action, cave_map)
 
-            # Check if the player reached the artifact
             if player.x == artifact_x and player.y == artifact_y:
                 print("You found the ancient artifact!")
                 objectives["Find the Artifact"] = True
@@ -320,7 +315,6 @@ def handle_landmark(player, objectives, cave_map):
         print("Legend has it that the cave conceals the ancient artifact you seek.")
         input("Press Enter to enter the cave...\n")
 
-        # Set the location of the artifact in the dark cave
         artifact_x, artifact_y = 8, 8
         cave_map.set_artifact(artifact_x, artifact_y)
 
@@ -340,7 +334,6 @@ def handle_landmark(player, objectives, cave_map):
 
             move_player(player, action, cave_map)
 
-            # Check if the player reached the artifact
             if player.x == artifact_x and player.y == artifact_y:
                 print("You found the ancient artifact!")
                 objectives["Find the Artifact"] = True
@@ -372,13 +365,13 @@ def main():
     cave_map = CaveMap(10, 10)
     cave_map.set_entrance()
     cave_map.generate_cave_walls(50)
-    cave_map.scatter_loot(5)  # Scatter 5 attack-boosting loots
-    cave_map.scatter_enemies(10)  # Scatter 3 enemies
+    cave_map.scatter_loot(5) 
+    cave_map.scatter_enemies(10)  
 
     objectives = {
         "Defeat All Enemies": False,
         "Find the Artifact": False,
-        "Enter the Cave": False  # Add the new objective
+        "Enter the Cave": False 
     }
 
 
@@ -388,7 +381,6 @@ def main():
         print(player)
         display_objectives(objectives)
 
-        # Check if Defeat All Enemies objective is completed before showing the entrance
         if not objectives["Defeat All Enemies"]:
             print("---- Defeat all enemies in the area before entering the dark cave. ----\n")
             print("m - enemies")
@@ -410,7 +402,6 @@ def main():
 
         move_player(player, action, cave_map)
 
-        # Update the condition to trigger the "Defeat All Enemies" objective
         if not objectives["Defeat All Enemies"] and all((x, y) not in cave_map.enemies for x in range(cave_map.width) for y in range(cave_map.height)):
             objectives["Defeat All Enemies"] = True
             print_typewriter("\nYou have defeated all enemies in the area!")
